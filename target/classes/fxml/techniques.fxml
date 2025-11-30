@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.TechniquesController" spacing="8" styleClass="view-root">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Técnicas" styleClass="section-title" />
+        <Button text="Nueva" onAction="#onNueva" styleClass="btn-success" />
+        <Button text="Editar" onAction="#onEditar" />
+        <Button text="Eliminar" onAction="#onEliminar" styleClass="btn-danger" />
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="filterField" promptText="Filtrar por nombre" prefWidth="180" />
+    </HBox>
+    <TableView fx:id="table" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180" />
+            <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="260" />
+            <TableColumn fx:id="colCosto" text="Costo Base" prefWidth="120" />
+        </columns>
+    </TableView>
+</VBox>

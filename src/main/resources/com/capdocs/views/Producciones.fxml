@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="10">
+    <Label text="Productions Module" />
+    <TableView prefHeight="400" />
+</VBox>

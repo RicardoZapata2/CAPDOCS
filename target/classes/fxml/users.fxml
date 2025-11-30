@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.UsersController" spacing="8" styleClass="view-root">
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Usuarios" styleClass="section-title" />
+        <Button text="Nuevo" onAction="#onNuevo" />
+        <Button text="Eliminar" onAction="#onEliminar" />
+    </HBox>
+    <TableView fx:id="table" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colUser" text="Usuario" prefWidth="180" />
+            <TableColumn fx:id="colName" text="Nombre" prefWidth="220" />
+            <TableColumn fx:id="colRole" text="Rol" prefWidth="120" />
+        </columns>
+    </TableView>
+</VBox>

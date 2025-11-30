@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.SidebarController" spacing="8" styleClass="sidebar-root">
+    <Label text="CapDocs" styleClass="brand" />
+    <Button fx:id="btnBack" text="⟵ Atrás" onAction="#onBack" styleClass="sidebar-button" />
+    <Button fx:id="btnClientes" text="Clientes" onAction="#onClientes" styleClass="sidebar-button" />
+    <Button fx:id="btnProducciones" text="Producciones" onAction="#onProducciones" styleClass="sidebar-button" />
+    <Button fx:id="btnTecnicas" text="Técnicas" onAction="#onTecnicas" styleClass="sidebar-button" />
+    <Button fx:id="btnCostos" text="Ledger Costos" onAction="#onCostos" styleClass="sidebar-button" />
+    <Button text="Diseños" styleClass="sidebar-button" />
+    <Button fx:id="btnUsuarios" text="Usuarios" onAction="#onUsuarios" styleClass="sidebar-button" />
+</VBox>

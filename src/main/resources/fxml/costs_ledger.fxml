@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.CostsLedgerController" spacing="8" styleClass="view-root">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Ledger Costos" styleClass="section-title" />
+        <TextField fx:id="filterConcept" promptText="Filtrar concepto (ABONO, DESCUENTO)" />
+        <Button text="Refrescar" onAction="#onRefrescar" />
+    </HBox>
+    <TableView fx:id="table" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120" />
+            <TableColumn fx:id="colProd" text="Producción" prefWidth="120" />
+            <TableColumn fx:id="colConcepto" text="Concepto" prefWidth="140" />
+            <TableColumn fx:id="colMonto" text="Monto" prefWidth="120" />
+        </columns>
+    </TableView>
+</VBox>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.InventoryController">
+    <children>
+        <VBox spacing="8" layoutX="10" layoutY="10" prefWidth="700" prefHeight="400">
+            <HBox spacing="8">
+                <Label text="Inventario" style="-fx-font-size:16px; -fx-text-fill: white;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="Agregar producto" onAction="#onAgregarProducto" />
+            </HBox>
+            <TableView fx:id="tableProducts" prefHeight="360">
+                <columns>
+                    <TableColumn fx:id="colSku" text="SKU" prefWidth="120" />
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200" />
+                    <TableColumn fx:id="colReferencia" text="Referencia" prefWidth="140" />
+                    <TableColumn fx:id="colCategoria" text="Categoria" prefWidth="120" />
+                    <TableColumn fx:id="colHasSizes" text="Tallas" prefWidth="80" />
+                </columns>
+            </TableView>
+        </VBox>
+    </children>
+</AnchorPane>

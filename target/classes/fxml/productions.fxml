@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.ProductionsController" spacing="8" styleClass="view-root">
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Producciones" styleClass="section-title" />
+        <Button text="Nueva" onAction="#onNueva" />
+    </HBox>
+    <TableView fx:id="table" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colCliente" text="Cliente" prefWidth="180" />
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="140" />
+            <TableColumn fx:id="colEntrega" text="Entrega Estimada" prefWidth="160" />
+        </columns>
+    </TableView>
+</VBox>

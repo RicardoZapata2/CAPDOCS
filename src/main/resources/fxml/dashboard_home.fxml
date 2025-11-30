@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.DashboardHomeController" spacing="16" styleClass="view-root">
+    <Label text="Dashboard" styleClass="section-title" />
+    <HBox spacing="32">
+        <VBox spacing="6" styleClass="card">
+            <Label text="Producciones pendientes" />
+            <Label fx:id="lblPendientes" style="-fx-font-size: 28; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox spacing="6" styleClass="card">
+            <Label text="Ventas hoy" />
+            <Label fx:id="lblVentasHoy" style="-fx-font-size: 28; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox spacing="6" styleClass="card">
+            <Label text="Ventas este mes" />
+            <Label fx:id="lblVentasMes" style="-fx-font-size: 28; -fx-font-weight: bold;" />
+        </VBox>
+    </HBox>
+    <Label text="Pendientes (FIFO)" styleClass="section-title" />
+    <TableView fx:id="tblPendientes" prefHeight="300" styleClass="card">
+        <columns>
+            <TableColumn fx:id="colProdCliente" text="Cliente" prefWidth="160" />
+            <TableColumn fx:id="colProdEstado" text="Estado" prefWidth="120" />
+            <TableColumn fx:id="colProdFecha" text="Entrega" prefWidth="140" />
+        </columns>
+    </TableView>
+</VBox>

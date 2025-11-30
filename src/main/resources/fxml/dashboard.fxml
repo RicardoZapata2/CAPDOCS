@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.DashboardController">
+    <left>
+        <VBox fx:id="sidebarContainer" />
+    </left>
+    <center>
+        <StackPane fx:id="contentArea" />
+    </center>
+</BorderPane>

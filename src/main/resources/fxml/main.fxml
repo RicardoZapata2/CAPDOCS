@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.MainController">
+    <left>
+        <VBox fx:id="sidebar" spacing="10" styleClass="sidebar" prefWidth="220.0" BorderPane.alignment="CENTER">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <ImageView fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="/images/logo.svg" />
+                    </image>
+                </ImageView>
+                <Label text="CAPDOCS" styleClass="brand" />
+            </HBox>
+            <Button text="Dashboard" onAction="#onDashboardClicked" />
+            <Button text="Inventario" onAction="#onInventoryClicked" />
+            <Button text="Clientes" onAction="#onCustomersClicked" />
+            <Button text="Bordados" />
+            <Button text="Ventas" />
+            <Button text="Finanzas" />
+            <Button text="Usuarios" />
+        </VBox>
+    </left>
+    <center>
+        <AnchorPane fx:id="contentPane">
+            <Label fx:id="sectionTitle" text="" layoutX="10" layoutY="10" styleClass="section-title"/>
+        </AnchorPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,5 @@
+/* Minimal dark theme */
+.root { -fx-background-color: #222; background-color: #222; -fx-text-fill: #eee; }
+.button { -fx-background-color: #444; background-color: #444; -fx-text-fill: #eee; }
+.button:hover { -fx-background-color: #666; background-color: #666; }
+.table-view { -fx-background-color: #2b2b2b; }

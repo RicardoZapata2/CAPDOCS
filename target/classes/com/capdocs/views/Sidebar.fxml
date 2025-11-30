@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.capdocs.ui.SidebarController" spacing="8" styleClass="sidebar">
+    <Label text="CapDocs" />
+    <Button text="Clientes" onAction="#handleShowClientes" />
+    <Button text="Producciones" onAction="#handleShowProducciones" />
+</VBox>

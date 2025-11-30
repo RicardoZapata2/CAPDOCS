@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.orderlinkpos.ui.CustomersController" spacing="8" stylesheets="@../css/style.css" styleClass="view-root">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Clientes" styleClass="section-title" />
+        <Button text="Nuevo" onAction="#onNuevo" />
+        <Button text="Exportar Excel" onAction="#onExportar" />
+        <TextField fx:id="filterField" promptText="Filtrar por nombre o email" />
+    </HBox>
+    <TableView fx:id="table" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="160" />
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="180" />
+            <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120" />
+            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="220" />
+        </columns>
+    </TableView>
+    <HBox spacing="8" alignment="CENTER_RIGHT">
+        <Button text="Editar" onAction="#onEditar" />
+        <Button text="Eliminar" onAction="#onEliminar" />
+        <Button text="Historial" onAction="#onHistorial" />
+    </HBox>
+</VBox>

@@ -1,0 +1,224 @@
+/* 
+   CapDocs Premium Modern Theme 
+   Palette: Deep Charcoal, Vibrant Blue/Purple, Soft White
+*/
+
+.root {
+    /* Color Variables */
+    -fx-bg-base: #121212;
+    -fx-bg-surface: #1e1e1e;
+    -fx-bg-surface-hover: #2d2d2d;
+
+    -fx-primary-gradient: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+    -fx-primary-color: #4facfe;
+    -fx-accent-color: #00f2fe;
+
+    -fx-text-primary: #ffffff;
+    -fx-text-secondary: #b3b3b3;
+    -fx-text-muted: #666666;
+
+    -fx-border-color: #333333;
+    -fx-success: #00b894;
+    -fx-warning: #fdcb6e;
+
+    /* Global Font */
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-background-color: -fx-bg-base;
+}
+
+/* --- Login View --- */
+.login-container {
+    -fx-background-color: -fx-bg-surface;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 40, 0, 0, 10);
+    -fx-padding: 60;
+    -fx-alignment: center;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-min-width: 450;
+}
+
+.login-title {
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(37, 117, 252, 0.5), 20, 0, 0, 0);
+    -fx-padding: 0 0 40 0;
+}
+
+/* Inputs */
+.text-field,
+.password-field {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: -fx-text-muted;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-padding: 15;
+    -fx-font-size: 14px;
+    -fx-transition: all 0.3s ease;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-background-color: #333333;
+    -fx-border-color: -fx-primary-color;
+    -fx-effect: dropshadow(three-pass-box, rgba(79, 172, 254, 0.3), 10, 0, 0, 0);
+}
+
+/* Primary Button */
+.button-primary {
+    -fx-background-color: -fx-primary-gradient;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-padding: 15 30;
+    -fx-background-radius: 30;
+    /* Pill shape */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(37, 117, 252, 0.4), 15, 0, 0, 5);
+}
+
+.button-primary:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(three-pass-box, rgba(37, 117, 252, 0.6), 20, 0, 0, 5);
+}
+
+.button-primary:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-opacity: 0.9;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    -fx-background-color: #0a0a0a;
+    /* Darker than base */
+    -fx-padding: 40 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 20, 0, 10, 0);
+}
+
+.app-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+    -fx-padding: 0 0 50 10;
+    -fx-letter-spacing: 2px;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-alignment: center-left;
+    -fx-padding: 16 25;
+    -fx-cursor: hand;
+    -fx-background-radius: 15;
+    -fx-border-width: 0 0 0 0;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-text-fill: white;
+    -fx-translate-x: 5;
+}
+
+.sidebar-button:selected {
+    -fx-background-color: linear-gradient(to right, rgba(37, 117, 252, 0.2), transparent);
+    -fx-text-fill: -fx-primary-color;
+    -fx-border-color: -fx-primary-color;
+    -fx-border-width: 0 0 0 4;
+    /* Left accent bar */
+    -fx-padding: 16 21;
+    /* Adjust for border */
+}
+
+.user-info {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 5 0 0 15;
+}
+
+/* --- Dashboard --- */
+.card {
+    -fx-background-color: -fx-bg-surface;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 20, 0, 0, 5);
+    -fx-padding: 30;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+.card:hover {
+    -fx-translate-y: -5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 30, 0, 0, 10);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-title {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 0 0 10 0;
+}
+
+.card-value {
+    -fx-text-fill: white;
+    -fx-font-size: 42px;
+    -fx-font-weight: 900;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.1), 10, 0, 0, 0);
+}
+
+/* --- Top Bar --- */
+.top-bar {
+    -fx-background-color: transparent;
+    /* Seamless */
+    -fx-padding: 30 40;
+}
+
+.page-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.back-button {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-text-fill: -fx-text-secondary;
+    -fx-background-radius: 50;
+    -fx-padding: 10 20;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-text-fill: white;
+}
+
+/* ScrollBar Customization */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #404040;
+    -fx-background-radius: 10;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #606060;
+}
