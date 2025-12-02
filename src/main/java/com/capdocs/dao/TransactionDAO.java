@@ -47,4 +47,28 @@ public class TransactionDAO {
         }
         return transactions;
     }
+
+    public List<Transaction> findByDateRange(java.time.LocalDate start, java.time.LocalDate end) {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT * FROM transactions WHERE date >= ? AND date <= ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, start.atStartOfDay().toString());
+            pstmt.setString(2, end.atTime(23, 59, 59).toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                transactions.add(Transaction.builder()
+                        .id(rs.getInt("id"))
+                        .orderId(rs.getInt("order_id"))
+                        .type(Transaction.Type.valueOf(rs.getString("type")))
+                        .amount(rs.getDouble("amount"))
+                        .date(java.time.LocalDateTime.parse(rs.getString("date").replace(" ", "T"))) // Handle potential
+                                                                                                     // format diffs
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transactions;
+    }
 }

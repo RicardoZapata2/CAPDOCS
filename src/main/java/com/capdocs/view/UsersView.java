@@ -3,166 +3,191 @@ package com.capdocs.view;
 import com.capdocs.dao.UserDAO;
 import com.capdocs.model.User;
 import com.capdocs.util.AlertHelper;
+import org.mindrot.jbcrypt.BCrypt;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.mindrot.jbcrypt.BCrypt;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.Optional;
 
-public class UsersView extends VBox {
+public class UsersView extends BorderPane {
 
     private final UserDAO userDAO;
-    private final TableView<User> table;
-    private final ObservableList<User> users;
+    private final TableView<User> userTable;
+    private final ObservableList<User> userList;
 
     public UsersView() {
         this.userDAO = new UserDAO();
-        this.users = FXCollections.observableArrayList();
-        this.table = new TableView<>();
+        this.userList = FXCollections.observableArrayList();
+        this.userTable = new TableView<>();
 
-        setSpacing(20);
-        setPadding(new Insets(30));
-        setAlignment(Pos.TOP_CENTER);
+        initUI();
+        loadData();
+    }
 
-        Label title = new Label("Gestión de Usuarios");
-        title.setStyle("-fx-font-size: 28px; -fx-text-fill: white; -fx-font-weight: bold;");
+    private void initUI() {
+        setPadding(new Insets(20));
+        setStyle("-fx-background-color: #1e1e1e;");
 
-        // Table Columns
-        TableColumn<User, Integer> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idCol.setPrefWidth(50);
+        // Header
+        Label titleLabel = new Label("Gestión de Usuarios");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
 
-        TableColumn<User, String> usernameCol = new TableColumn<>("Usuario");
-        usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
-        usernameCol.setPrefWidth(200);
+        Button addUserBtn = new Button("Nuevo Usuario");
+        addUserBtn.getStyleClass().add("button-primary");
+        addUserBtn.setOnAction(e -> showUserDialog(null));
+
+        HBox header = new HBox(20, titleLabel, addUserBtn);
+        header.setAlignment(Pos.CENTER_LEFT);
+        setTop(header);
+
+        // Table
+        userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        userTable.setStyle("-fx-background-color: transparent;");
+        VBox.setMargin(userTable, new Insets(20, 0, 0, 0));
+
+        TableColumn<User, String> userCol = new TableColumn<>("Usuario");
+        userCol.setCellValueFactory(new PropertyValueFactory<>("username"));
 
         TableColumn<User, String> roleCol = new TableColumn<>("Rol");
         roleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
-        roleCol.setPrefWidth(150);
 
-        table.getColumns().addAll(idCol, usernameCol, roleCol);
-        table.setItems(users);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.setStyle("-fx-background-color: transparent;");
+        TableColumn<User, String> actionsCol = new TableColumn<>("Acciones");
+        actionsCol.setCellFactory(param -> new TableCell<>() {
+            private final Button passBtn = new Button("Cambiar Clave");
+            private final Button deleteBtn = new Button("Eliminar");
 
-        // Buttons
-        Button addButton = new Button("Nuevo Usuario");
-        addButton.getStyleClass().add("button-primary");
-        addButton.setOnAction(e -> showUserDialog(null));
+            {
+                passBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 10px;");
+                passBtn.setOnAction(event -> showPasswordDialog(getTableView().getItems().get(getIndex())));
 
-        Button editButton = new Button("Editar");
-        editButton.getStyleClass().add("button-primary");
-        editButton.setOnAction(e -> {
-            User selected = table.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                showUserDialog(selected);
-            } else {
-                AlertHelper.showError("Error", "Seleccione un usuario para editar.");
+                deleteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px;");
+                deleteBtn.setOnAction(event -> deleteUser(getTableView().getItems().get(getIndex())));
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox buttons = new HBox(5, passBtn, deleteBtn);
+                    buttons.setAlignment(Pos.CENTER);
+                    setGraphic(buttons);
+                }
             }
         });
 
-        Button deleteButton = new Button("Eliminar");
-        deleteButton.getStyleClass().add("button-primary"); // Should be danger style in real app
-        deleteButton.setStyle("-fx-background-color: #e74c3c;");
-        deleteButton.setOnAction(e -> deleteUser());
+        userTable.getColumns().addAll(userCol, roleCol, actionsCol);
+        userTable.setItems(userList);
 
-        HBox actions = new HBox(15, addButton, editButton, deleteButton);
-        actions.setAlignment(Pos.CENTER);
-
-        getChildren().addAll(title, table, actions);
-
-        loadUsers();
+        setCenter(userTable);
     }
 
-    private void loadUsers() {
-        users.setAll(userDAO.findAll());
-    }
-
-    private void deleteUser() {
-        User selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            if (selected.getUsername().equals("admin")) {
-                AlertHelper.showError("Error", "No se puede eliminar el administrador principal.");
-                return;
-            }
-            userDAO.delete(selected.getId());
-            loadUsers();
-        } else {
-            AlertHelper.showError("Error", "Seleccione un usuario para eliminar.");
-        }
+    private void loadData() {
+        userList.setAll(userDAO.findAll());
     }
 
     private void showUserDialog(User user) {
-        Dialog<User> dialog = new Dialog<>();
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle(user == null ? "Nuevo Usuario" : "Editar Usuario");
-        dialog.setHeaderText(null);
 
-        ButtonType saveButtonType = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
 
-        VBox content = new VBox(10);
-        content.setPadding(new Insets(20));
-
-        TextField usernameField = new TextField();
+        TextField usernameField = new TextField(user != null ? user.getUsername() : "");
         usernameField.setPromptText("Nombre de usuario");
-        if (user != null)
-            usernameField.setText(user.getUsername());
 
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Contraseña");
 
-        ComboBox<User.Role> roleComboBox = new ComboBox<>();
-        roleComboBox.getItems().setAll(User.Role.values());
-        roleComboBox.setValue(user != null ? user.getRole() : User.Role.OPERATOR);
+        ComboBox<User.Role> roleCombo = new ComboBox<>();
+        roleCombo.setItems(FXCollections.observableArrayList(User.Role.values()));
+        roleCombo.setValue(user != null ? user.getRole() : User.Role.OPERATOR);
 
-        content.getChildren().addAll(new Label("Usuario:"), usernameField, new Label("Contraseña:"), passwordField,
-                new Label("Rol:"), roleComboBox);
-        dialog.getDialogPane().setContent(content);
+        Button saveBtn = new Button("Guardar");
+        saveBtn.getStyleClass().add("button-primary");
+        saveBtn.setOnAction(e -> {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            User.Role role = roleCombo.getValue();
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-                User.Role role = roleComboBox.getValue();
-
-                if (username.isEmpty()) {
-                    return null;
-                }
-
-                if (user == null) {
-                    // Create
-                    if (password.isEmpty())
-                        return null;
-                    String hash = BCrypt.hashpw(password, BCrypt.gensalt());
-                    return new User(0, username, hash, role);
-                } else {
-                    // Update
-                    user.setUsername(username);
-                    user.setRole(role);
-                    // Only update password if provided
-                    if (!password.isEmpty()) {
-                        user.setPasswordHash(BCrypt.hashpw(password, BCrypt.gensalt()));
-                    }
-                    return user;
-                }
+            if (username.isEmpty() || (user == null && password.isEmpty())) {
+                AlertHelper.showError("Error", "Complete todos los campos.");
+                return;
             }
-            return null;
-        });
 
-        Optional<User> result = dialog.showAndWait();
-        result.ifPresent(u -> {
             if (user == null) {
-                userDAO.create(u);
+                // Create
+                String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+                User newUser = new User(0, username, hash, role);
+                userDAO.create(newUser);
             } else {
-                userDAO.update(u);
+                // Update (only username/role here, password via separate dialog)
+                user.setUsername(username);
+                user.setRole(role);
+                userDAO.update(user);
             }
-            loadUsers();
+            loadData();
+            dialog.close();
         });
+
+        layout.getChildren().addAll(new Label("Usuario:"), usernameField);
+        if (user == null) {
+            layout.getChildren().addAll(new Label("Contraseña:"), passwordField);
+        }
+        layout.getChildren().addAll(new Label("Rol:"), roleCombo, saveBtn);
+
+        Scene scene = new Scene(layout, 300, 300);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        } catch (Exception ex) {
+            /* Ignore */ }
+        dialog.setScene(scene);
+        dialog.showAndWait();
+    }
+
+    private void showPasswordDialog(User user) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Cambiar Contraseña");
+        dialog.setHeaderText("Nueva contraseña para: " + user.getUsername());
+        dialog.setContentText("Contraseña:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(newPass -> {
+            if (newPass.isEmpty()) {
+                AlertHelper.showError("Error", "La contraseña no puede estar vacía.");
+                return;
+            }
+            String hash = BCrypt.hashpw(newPass, BCrypt.gensalt());
+            userDAO.updatePassword(user.getId(), hash);
+            AlertHelper.showInfo("Éxito", "Contraseña actualizada.");
+        });
+    }
+
+    private void deleteUser(User user) {
+        if (user.getUsername().equals("admin")) {
+            AlertHelper.showError("Error", "No se puede eliminar al administrador principal.");
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar Eliminación");
+        alert.setHeaderText("¿Eliminar usuario " + user.getUsername() + "?");
+
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            userDAO.delete(user.getId());
+            loadData();
+        }
     }
 }

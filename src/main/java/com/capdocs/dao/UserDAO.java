@@ -66,6 +66,18 @@ public class UserDAO {
         }
     }
 
+    public void updatePassword(int userId, String newPasswordHash) {
+        String sql = "UPDATE users SET password_hash = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPasswordHash);
+            pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error updating password: " + e.getMessage());
+        }
+    }
+
     public void delete(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();

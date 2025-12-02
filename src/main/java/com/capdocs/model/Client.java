@@ -1,21 +1,22 @@
 package com.capdocs.model;
 
-/**
- * Modelo para Clientes.
- */
 public class Client {
     private Integer id;
     private String name;
     private String phone;
+    private String email;
+    private String address;
     private Double balance;
 
     public Client() {
     }
 
-    public Client(Integer id, String name, String phone, Double balance) {
+    public Client(Integer id, String name, String phone, String email, String address, Double balance) {
         this.id = id;
         this.name = name;
         this.phone = phone;
+        this.email = email;
+        this.address = address;
         this.balance = balance;
     }
 
@@ -43,6 +44,22 @@ public class Client {
         this.phone = phone;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public Double getBalance() {
         return balance;
     }
@@ -51,38 +68,8 @@ public class Client {
         this.balance = balance;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private Integer id;
-        private String name;
-        private String phone;
-        private Double balance;
-
-        public Builder id(Integer id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder phone(String phone) {
-            this.phone = phone;
-            return this;
-        }
-
-        public Builder balance(Double balance) {
-            this.balance = balance;
-            return this;
-        }
-
-        public Client build() {
-            return new Client(id, name, phone, balance);
-        }
+    @Override
+    public String toString() {
+        return name;
     }
 }

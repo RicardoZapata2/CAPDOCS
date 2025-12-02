@@ -7,172 +7,179 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.util.Optional;
-
-public class SuppliersView extends VBox {
+public class SuppliersView extends BorderPane {
 
     private final SupplierDAO supplierDAO;
     private final TableView<Supplier> table;
-    private final ObservableList<Supplier> suppliers;
+    private final ObservableList<Supplier> data;
 
     public SuppliersView() {
         this.supplierDAO = new SupplierDAO();
-        this.suppliers = FXCollections.observableArrayList();
+        this.data = FXCollections.observableArrayList();
         this.table = new TableView<>();
 
-        setSpacing(20);
-        setPadding(new Insets(30));
-        setAlignment(Pos.TOP_CENTER);
+        initUI();
+        loadData();
+    }
 
-        Label title = new Label("Gestión de Proveedores");
-        title.setStyle("-fx-font-size: 28px; -fx-text-fill: white; -fx-font-weight: bold;");
+    private void initUI() {
+        setPadding(new Insets(20));
+        setStyle("-fx-background-color: #1e1e1e;");
 
-        // Table Columns
-        TableColumn<Supplier, Integer> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idCol.setPrefWidth(50);
+        // Header
+        Label titleLabel = new Label("Gestión de Proveedores");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
 
-        TableColumn<Supplier, String> nameCol = new TableColumn<>("Nombre");
+        Button addBtn = new Button("Nuevo Proveedor");
+        addBtn.getStyleClass().add("button-primary");
+        addBtn.setOnAction(e -> showDialog(null));
+
+        HBox header = new HBox(20, titleLabel, addBtn);
+        header.setAlignment(Pos.CENTER_LEFT);
+        setTop(header);
+
+        // Table
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setStyle("-fx-background-color: transparent;");
+        VBox.setMargin(table, new Insets(20, 0, 0, 0));
+
+        TableColumn<Supplier, String> nameCol = new TableColumn<>("Empresa");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameCol.setPrefWidth(200);
 
         TableColumn<Supplier, String> contactCol = new TableColumn<>("Contacto");
         contactCol.setCellValueFactory(new PropertyValueFactory<>("contactPerson"));
-        contactCol.setPrefWidth(150);
 
         TableColumn<Supplier, String> phoneCol = new TableColumn<>("Teléfono");
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        phoneCol.setPrefWidth(120);
 
-        table.getColumns().addAll(idCol, nameCol, contactCol, phoneCol);
-        table.setItems(suppliers);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.setStyle("-fx-background-color: transparent;");
+        TableColumn<Supplier, String> emailCol = new TableColumn<>("Email");
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        // Buttons
-        Button addButton = new Button("Nuevo Proveedor");
-        addButton.getStyleClass().add("button-primary");
-        addButton.setOnAction(e -> showSupplierDialog(null));
+        TableColumn<Supplier, String> actionsCol = new TableColumn<>("Acciones");
+        actionsCol.setCellFactory(param -> new TableCell<>() {
+            private final Button editBtn = new Button("Editar");
+            private final Button deleteBtn = new Button("Eliminar");
 
-        Button editButton = new Button("Editar");
-        editButton.getStyleClass().add("button-primary");
-        editButton.setOnAction(e -> {
-            Supplier selected = table.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                showSupplierDialog(selected);
-            } else {
-                AlertHelper.showError("Error", "Seleccione un proveedor para editar.");
+            {
+                editBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 10px;");
+                editBtn.setOnAction(event -> showDialog(getTableView().getItems().get(getIndex())));
+
+                deleteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 10px;");
+                deleteBtn.setOnAction(event -> deleteSupplier(getTableView().getItems().get(getIndex())));
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox buttons = new HBox(5, editBtn, deleteBtn);
+                    buttons.setAlignment(Pos.CENTER);
+                    setGraphic(buttons);
+                }
             }
         });
 
-        Button deleteButton = new Button("Eliminar");
-        deleteButton.getStyleClass().add("button-primary");
-        deleteButton.setStyle("-fx-background-color: #e74c3c;");
-        deleteButton.setOnAction(e -> deleteSupplier());
+        table.getColumns().addAll(nameCol, contactCol, phoneCol, emailCol, actionsCol);
+        table.setItems(data);
 
-        HBox actions = new HBox(15, addButton, editButton, deleteButton);
-        actions.setAlignment(Pos.CENTER);
-
-        getChildren().addAll(title, table, actions);
-
-        loadSuppliers();
+        setCenter(table);
     }
 
-    private void loadSuppliers() {
-        suppliers.setAll(supplierDAO.findAll());
+    private void loadData() {
+        data.setAll(supplierDAO.findAll());
     }
 
-    private void deleteSupplier() {
-        Supplier selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            supplierDAO.delete(selected.getId());
-            loadSuppliers();
-        } else {
-            AlertHelper.showError("Error", "Seleccione un proveedor para eliminar.");
-        }
-    }
-
-    private void showSupplierDialog(Supplier supplier) {
-        Dialog<Supplier> dialog = new Dialog<>();
+    private void showDialog(Supplier supplier) {
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle(supplier == null ? "Nuevo Proveedor" : "Editar Proveedor");
-        dialog.setHeaderText(null);
 
-        ButtonType saveButtonType = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
 
-        VBox content = new VBox(10);
-        content.setPadding(new Insets(20));
+        TextField nameField = new TextField(supplier != null ? supplier.getName() : "");
+        nameField.setPromptText("Empresa");
 
-        TextField nameField = new TextField();
-        nameField.setPromptText("Nombre de la empresa");
-        if (supplier != null)
-            nameField.setText(supplier.getName());
+        TextField contactField = new TextField(supplier != null ? supplier.getContactPerson() : "");
+        contactField.setPromptText("Persona de Contacto");
 
-        TextField contactField = new TextField();
-        contactField.setPromptText("Persona de contacto");
-        if (supplier != null)
-            contactField.setText(supplier.getContactPerson());
-
-        TextField phoneField = new TextField();
+        TextField phoneField = new TextField(supplier != null ? supplier.getPhone() : "");
         phoneField.setPromptText("Teléfono");
-        if (supplier != null)
-            phoneField.setText(supplier.getPhone());
 
-        TextField emailField = new TextField();
+        TextField emailField = new TextField(supplier != null ? supplier.getEmail() : "");
         emailField.setPromptText("Email");
-        if (supplier != null)
-            emailField.setText(supplier.getEmail());
 
-        TextField addressField = new TextField();
+        TextField addressField = new TextField(supplier != null ? supplier.getAddress() : "");
         addressField.setPromptText("Dirección");
-        if (supplier != null)
-            addressField.setText(supplier.getAddress());
 
-        TextArea notesArea = new TextArea();
-        notesArea.setPromptText("Notas adicionales");
-        notesArea.setPrefRowCount(3);
-        if (supplier != null)
-            notesArea.setText(supplier.getNotes());
+        TextArea notesField = new TextArea(supplier != null ? supplier.getNotes() : "");
+        notesField.setPromptText("Notas");
+        notesField.setPrefRowCount(3);
 
-        content.getChildren().addAll(
-                new Label("Nombre:"), nameField,
+        Button saveBtn = new Button("Guardar");
+        saveBtn.getStyleClass().add("button-primary");
+        saveBtn.setOnAction(e -> {
+            if (nameField.getText().isEmpty()) {
+                AlertHelper.showError("Error", "El nombre de la empresa es obligatorio.");
+                return;
+            }
+
+            Supplier newSupplier = new Supplier(
+                    supplier != null ? supplier.getId() : 0,
+                    nameField.getText(),
+                    contactField.getText(),
+                    phoneField.getText(),
+                    emailField.getText(),
+                    addressField.getText(),
+                    notesField.getText());
+
+            if (supplier == null) {
+                supplierDAO.create(newSupplier);
+            } else {
+                supplierDAO.update(newSupplier);
+            }
+            loadData();
+            dialog.close();
+        });
+
+        layout.getChildren().addAll(
+                new Label("Empresa:"), nameField,
                 new Label("Contacto:"), contactField,
                 new Label("Teléfono:"), phoneField,
                 new Label("Email:"), emailField,
                 new Label("Dirección:"), addressField,
-                new Label("Notas:"), notesArea);
-        dialog.getDialogPane().setContent(content);
+                new Label("Notas:"), notesField,
+                saveBtn);
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                if (nameField.getText().isEmpty())
-                    return null;
+        Scene scene = new Scene(layout, 400, 550);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        } catch (Exception ex) {
+            /* Ignore */ }
+        dialog.setScene(scene);
+        dialog.showAndWait();
+    }
 
-                return new Supplier(
-                        supplier == null ? 0 : supplier.getId(),
-                        nameField.getText(),
-                        contactField.getText(),
-                        phoneField.getText(),
-                        emailField.getText(),
-                        addressField.getText(),
-                        notesArea.getText());
-            }
-            return null;
-        });
+    private void deleteSupplier(Supplier supplier) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar Eliminación");
+        alert.setHeaderText("¿Eliminar proveedor " + supplier.getName() + "?");
 
-        Optional<Supplier> result = dialog.showAndWait();
-        result.ifPresent(s -> {
-            if (supplier == null) {
-                supplierDAO.create(s);
-            } else {
-                supplierDAO.update(s);
-            }
-            loadSuppliers();
-        });
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            supplierDAO.delete(supplier.getId());
+            loadData();
+        }
     }
 }

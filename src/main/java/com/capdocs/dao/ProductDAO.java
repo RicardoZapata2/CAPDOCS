@@ -52,8 +52,14 @@ public class ProductDAO {
                 products.add(Product.builder()
                         .id(rs.getInt("id"))
                         .categoryId(rs.getInt("category_id"))
+                        .supplierId(rs.getInt("supplier_id") == 0 ? null : rs.getInt("supplier_id"))
                         .name(rs.getString("name"))
+                        .description(rs.getString("description"))
                         .baseCost(rs.getDouble("base_cost"))
+                        .salePrice(rs.getDouble("sale_price"))
+                        .wholesalePrice(rs.getDouble("wholesale_price"))
+                        .wholesaleMinUnits(rs.getInt("wholesale_min_units"))
+                        .imagePath(rs.getString("image_path"))
                         .categoryName(rs.getString("category_name"))
                         .build());
             }
@@ -64,13 +70,24 @@ public class ProductDAO {
     }
 
     public int saveProduct(Product product) throws SQLException {
-        String sql = "INSERT INTO products (category_id, name, base_cost) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO products (category_id, supplier_id, name, description, base_cost, sale_price, wholesale_price, wholesale_min_units, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setInt(1, product.getCategoryId());
-            pstmt.setString(2, product.getName());
-            pstmt.setDouble(3, product.getBaseCost());
+            if (product.getSupplierId() != null) {
+                pstmt.setInt(2, product.getSupplierId());
+            } else {
+                pstmt.setNull(2, Types.INTEGER);
+            }
+            pstmt.setString(3, product.getName());
+            pstmt.setString(4, product.getDescription());
+            pstmt.setDouble(5, product.getBaseCost());
+            pstmt.setDouble(6, product.getSalePrice());
+            pstmt.setDouble(7, product.getWholesalePrice() != null ? product.getWholesalePrice() : 0.0);
+            pstmt.setInt(8, product.getWholesaleMinUnits() != null ? product.getWholesaleMinUnits() : 12);
+            pstmt.setString(9, product.getImagePath());
+
             pstmt.executeUpdate();
 
             try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {

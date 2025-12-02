@@ -44,27 +44,14 @@ public class LoginController {
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // Check password
-            // Note: For the default admin, the hash might be invalid if I didn't generate
-            // it correctly.
-            // For MVP, if checkpw fails, check if it matches plain text (only for
-            // dev/testing if needed, but risky).
-            // I'll stick to BCrypt.checkpw.
-            // If the default hash I inserted is invalid, login will fail.
-            // I'll assume the user will create a proper user or I'll fix the hash if
-            // needed.
-            // Actually, for the default 'admin', I inserted a dummy hash. I should probably
-            // just hardcode a check for 'admin'/'admin' if DB hash matches dummy.
-
             boolean passwordMatch = false;
+
             try {
-                if (user.getUsername().equals("admin") && password.equals("admin")) {
+                if (BCrypt.checkpw(password, user.getPasswordHash())) {
                     passwordMatch = true;
-                } else {
-                    passwordMatch = BCrypt.checkpw(password, user.getPasswordHash());
                 }
             } catch (IllegalArgumentException e) {
-                // Fallback: check plain text equality
+                // Fallback for legacy/plain text passwords (should be removed in production)
                 if (password.equals(user.getPasswordHash())) {
                     passwordMatch = true;
                 }
@@ -72,8 +59,6 @@ public class LoginController {
 
             if (passwordMatch) {
                 Session.setCurrentUser(user);
-                // AlertHelper.showInfo("Bienvenido", "Inicio de sesión exitoso. Rol: " +
-                // user.getRole()); // Removed as per request
                 if (onLoginSuccess != null) {
                     onLoginSuccess.run();
                 }

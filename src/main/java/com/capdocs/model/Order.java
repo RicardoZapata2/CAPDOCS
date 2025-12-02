@@ -2,38 +2,30 @@ package com.capdocs.model;
 
 import java.time.LocalDateTime;
 
-/**
- * Modelo para Órdenes de Producción.
- */
 public class Order {
     private Integer id;
     private Integer clientId;
-    private Status status;
+    private String status; // PENDING, IN_PROCESS, FINISHED, DELIVERED, CANCELLED
     private Double totalPrice;
     private Double paidAmount;
+    private LocalDateTime deliveryDate;
     private LocalDateTime createdAt;
 
-    // Opcional: Para mostrar en la UI
+    // UI Helper
     private String clientName;
-
-    public enum Status {
-        PENDING,
-        IN_PROCESS,
-        FINISHED
-    }
 
     public Order() {
     }
 
-    public Order(Integer id, Integer clientId, Status status, Double totalPrice, Double paidAmount,
-            LocalDateTime createdAt, String clientName) {
+    public Order(Integer id, Integer clientId, String status, Double totalPrice, Double paidAmount,
+            LocalDateTime deliveryDate, LocalDateTime createdAt) {
         this.id = id;
         this.clientId = clientId;
         this.status = status;
         this.totalPrice = totalPrice;
         this.paidAmount = paidAmount;
+        this.deliveryDate = deliveryDate;
         this.createdAt = createdAt;
-        this.clientName = clientName;
     }
 
     public Integer getId() {
@@ -52,11 +44,11 @@ public class Order {
         this.clientId = clientId;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -76,6 +68,14 @@ public class Order {
         this.paidAmount = paidAmount;
     }
 
+    public LocalDateTime getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDateTime deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -92,6 +92,12 @@ public class Order {
         this.clientName = clientName;
     }
 
+    @Override
+    public String toString() {
+        return "Order #" + id + " - " + status;
+    }
+
+    // Builder Pattern
     public static Builder builder() {
         return new Builder();
     }
@@ -99,11 +105,11 @@ public class Order {
     public static class Builder {
         private Integer id;
         private Integer clientId;
-        private Status status;
+        private String status;
         private Double totalPrice;
         private Double paidAmount;
+        private LocalDateTime deliveryDate;
         private LocalDateTime createdAt;
-        private String clientName;
 
         public Builder id(Integer id) {
             this.id = id;
@@ -115,8 +121,13 @@ public class Order {
             return this;
         }
 
-        public Builder status(Status status) {
+        public Builder status(String status) {
             this.status = status;
+            return this;
+        }
+
+        public Builder status(Status status) {
+            this.status = status.name();
             return this;
         }
 
@@ -130,18 +141,22 @@ public class Order {
             return this;
         }
 
+        public Builder deliveryDate(LocalDateTime deliveryDate) {
+            this.deliveryDate = deliveryDate;
+            return this;
+        }
+
         public Builder createdAt(LocalDateTime createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
-        public Builder clientName(String clientName) {
-            this.clientName = clientName;
-            return this;
-        }
-
         public Order build() {
-            return new Order(id, clientId, status, totalPrice, paidAmount, createdAt, clientName);
+            return new Order(id, clientId, status, totalPrice, paidAmount, deliveryDate, createdAt);
         }
+    }
+
+    public enum Status {
+        PENDING, IN_PROCESS, FINISHED, DELIVERED, CANCELLED
     }
 }

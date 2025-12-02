@@ -5,22 +5,34 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * ACADEMIC REQUIREMENT: QUEUE (Colas)
- * Manages Pending Orders for production (FIFO).
+ * Cola de Producción (FIFO).
+ * Requisito académico: Uso de Colas.
  */
 public class ProductionQueue {
 
-    private final Queue<Order> queue = new LinkedList<>();
+    private static ProductionQueue instance;
+    private final Queue<Order> queue;
 
-    public void enqueue(Order order) {
+    private ProductionQueue() {
+        this.queue = new LinkedList<>();
+    }
+
+    public static synchronized ProductionQueue getInstance() {
+        if (instance == null) {
+            instance = new ProductionQueue();
+        }
+        return instance;
+    }
+
+    public void addOrder(Order order) {
         queue.offer(order);
     }
 
-    public Order dequeue() {
+    public Order getNextOrder() {
         return queue.poll();
     }
 
-    public Order peek() {
+    public Order peekNextOrder() {
         return queue.peek();
     }
 
@@ -32,11 +44,7 @@ public class ProductionQueue {
         return queue.size();
     }
 
-    public void clear() {
-        queue.clear();
-    }
-
-    public Queue<Order> getAll() {
-        return new LinkedList<>(queue);
+    public Queue<Order> getQueue() {
+        return queue;
     }
 }
